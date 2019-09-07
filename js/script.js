@@ -5,8 +5,7 @@
         $power = $("#power"),
         $inner = $("#inner"),
         $h1,
-        url =
-            "https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1",
+        url = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=jsonp&jsonp=?",
         tweet = 'https://twitter.com/intent/tweet?text=',
         $a = $("a"),
         quote = false,
@@ -74,8 +73,8 @@
             dataType: "json",
             success: function (data) {
                 if (interval !== true) {
-                    if (data[0].content.length <= 120) {
-                        message = data[0].content;
+                    if (data.quoteText.length <= 120) {
+                        message = data.quoteText;
                         message = message.slice(3, message.length - 5).trim();
                         if (!/[&<>]/.test(message)) {
                             if (on && !typing) {
@@ -89,10 +88,15 @@
                                         $span.fadeTo(0, 1);
                                     }, 350);
                                 }
-                                message = data[0].content;
-                                message = message.slice(3, message.length - 5).trim();
+                                message = data.quoteText;
+                                message = message.trim();
                                 message = '"' + message + '"';
-                                author = "-" + data[0].title;
+                                author = data.quoteAuthor;
+                                if (author == "") {
+                                    author = "- Unknown";
+                                } else {
+                                    author = "- " + author; 
+                                }
                                 typing = true;
                                 window.setTimeout(function () {
                                     typeOut(message, author);
